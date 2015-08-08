@@ -19,6 +19,4 @@ first goal is Meetup.
 
 ## Run It
 
-**Doesn't yet work**
-
-    ./app.py
+    MEETUP_GROUP_URLNAME=OpenTwinCities MEETUP_API_KEY=OurKey ./app.py
