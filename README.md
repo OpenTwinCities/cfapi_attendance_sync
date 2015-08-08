@@ -1,8 +1,8 @@
 CfAPI_Attendance_Sync
 =====================
 
-A real hacked-together attempt to push Attendence data into the CfAPI. Our 
-first goal is Meetup.
+A real hacked together attempt to push Attendence data into the CfAPI. Our 
+first goal is Meetup. Currently we are fetching attendee data from Meetup.
 
 ## Requirements
 
