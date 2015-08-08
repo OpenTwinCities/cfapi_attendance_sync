@@ -2,7 +2,8 @@ CfAPI_Attendance_Sync
 =====================
 
 A real hacked together attempt to push Attendence data into the CfAPI. Our 
-first goal is Meetup. Currently we are fetching attendee data from Meetup.
+first goal is Meetup. Currently we are fetching attendee data from Meetup and
+formatting it to push to the CfAPI.
 
 ## Requirements
 
@@ -19,4 +20,4 @@ first goal is Meetup. Currently we are fetching attendee data from Meetup.
 
 ## Run It
 
-    MEETUP_GROUP_URLNAME=OpenTwinCities MEETUP_API_KEY=OurKey ./app.py
+    CFAPI_ORG_ID=Open-Twin-Cities MEETUP_GROUP_URLNAME=OpenTwinCities MEETUP_API_KEY=OurKey ./app.py

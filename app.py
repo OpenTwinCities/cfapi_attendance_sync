@@ -124,10 +124,30 @@ class MeetupClient(object):
         return attendees
 
 
-# Pseudocode:
-#   for event in events:
-#       attendees = fetch_attendees(event)
-#       push_to_cfapi(event, attendees)
+class CfAPIClient(object):
+    """Very basic client class for pushing attendee data.
+    """
+
+    def __init__(self, org_id):
+        self.org_id = org_id
+
+    @property
+    def org_url(self):
+        return (
+            'https://www.codeforamerica.org/api/organizations/' + self.org_id
+        )
+
+    def push_attendee(self, attendee):
+        url = (
+            'https://www.codeforamerica.org/brigade/%(org_id)s/checkin' %
+            {
+                'org_id': self.org_id
+            }
+        )
+        attendee['cfapi_url'] = self.org_url
+        logger.info('Will push this to ' + url)
+        logger.info(attendee)
+        # return requests.post(url, data=attendee)
 
 
 if __name__ == '__main__':
@@ -135,19 +155,28 @@ if __name__ == '__main__':
     logger = logging.getLogger('CfAPI_Attendance_Sync')
     logger.setLevel(logging.INFO)
 
+    cfapi_org_id = os.environ['CFAPI_ORG_ID']
     group_urlname = os.environ['MEETUP_GROUP_URLNAME']
     time_frame = os.environ.get('MEETUP_TIME_FRAME', '-1w,')
     api_key = os.environ['MEETUP_API_KEY']
 
+    cfapi_client = CfAPIClient(cfapi_org_id)
     meetup_client = MeetupClient(group_urlname, api_key)
     events = meetup_client.fetch_events(time_frame)
     logging.info('Fetched %d events from Meetup' % len(events))
     for event in events:
+        event_name = event['name']
+        event_date = str(datetime.utcfromtimestamp(event['time']/1000.0))
         logger.info("Event ID: " + event['id'])
-        logger.info("Event Name: " + event['name'])
-        logger.info("Event DateTime: " + datetime.fromtimestamp(
-            event['time']/1000.0).strftime('%Y-%m-%d %H:%M:%S'))
+        logger.info("Event Name: " + event_name)
+        logger.info("Event DateTime: " + event_date)
         attendees = meetup_client.fetch_attendees(event['id'])
         logger.info("\tFetched %d attendees" % len(attendees))
         for attendee in attendees:
-            logger.info("\tAttendee Name: " + attendee['member']['name'])
+            attendee_name = attendee['member']['name']
+            logger.info("\tAttendee Name: " + attendee_name)
+            cfapi_client.push_attendee({
+                'name': attendee_name,
+                'event': event_name,
+                'date': event_date
+            })
