@@ -4,7 +4,8 @@ import logging
 import os
 import requests
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('CfAPI_Attendance_Sync')
+logger.setLevel(logging.INFO)
 
 group_urlname = os.environ['MEETUP_GROUP_URLNAME']
 time_frame = os.environ.get('MEETUP_TIME_FRAME', '-1w,')
@@ -133,11 +134,11 @@ if __name__ == '__main__':
     events = fetch_meetup_events(group_urlname, time_frame, api_key)
     logging.info('Fetched %d events from Meetup' % len(events))
     for event in events:
-        logging.info("Event ID: " + event['id'])
-        logging.info("Event Name: " + event['name'])
-        logging.info("Event DateTime: " + datetime.fromtimestamp(
+        logger.info("Event ID: " + event['id'])
+        logger.info("Event Name: " + event['name'])
+        logger.info("Event DateTime: " + datetime.fromtimestamp(
             event['time']/1000.0).strftime('%Y-%m-%d %H:%M:%S'))
         attendees = fetch_meetup_attendees(group_urlname, event['id'], api_key)
-        logging.info("\tFetched %d attendees" % len(attendees))
+        logger.info("\tFetched %d attendees" % len(attendees))
         for attendee in attendees:
-            logging.info("\tAttendee Name: " + attendee['member']['name'])
+            logger.info("\tAttendee Name: " + attendee['member']['name'])
