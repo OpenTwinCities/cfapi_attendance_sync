@@ -4,13 +4,6 @@ import logging
 import os
 import requests
 
-logger = logging.getLogger('CfAPI_Attendance_Sync')
-logger.setLevel(logging.INFO)
-
-group_urlname = os.environ['MEETUP_GROUP_URLNAME']
-time_frame = os.environ.get('MEETUP_TIME_FRAME', '-1w,')
-api_key = os.environ['MEETUP_API_KEY']
-
 
 class MeetupClient(object):
     """Very basic client class for fetching event/attendee data.
@@ -138,6 +131,13 @@ class MeetupClient(object):
 
 
 if __name__ == '__main__':
+
+    logger = logging.getLogger('CfAPI_Attendance_Sync')
+    logger.setLevel(logging.INFO)
+
+    group_urlname = os.environ['MEETUP_GROUP_URLNAME']
+    time_frame = os.environ.get('MEETUP_TIME_FRAME', '-1w,')
+    api_key = os.environ['MEETUP_API_KEY']
 
     meetup_client = MeetupClient(group_urlname, api_key)
     events = meetup_client.fetch_events(time_frame)
